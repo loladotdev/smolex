@@ -3,7 +3,7 @@ import os
 import sqlite3
 import pickle
 
-from smolex.config import config
+from src.smolex.config import config
 
 
 def setup_database():
@@ -48,7 +48,7 @@ def create_ast_sqlite_index():
     db_connection.close()
 
 
-def generate_class_interface(ast_node: ast.ClassDef) -> str:
+def generate_class_interface(ast_node: ast.AST) -> str:
     """
     Generate the interface for the class:
 
@@ -58,6 +58,9 @@ def generate_class_interface(ast_node: ast.ClassDef) -> str:
         def bar(self, x: int) -> str:
             ...
     """
+
+    if not isinstance(ast_node, ast.ClassDef):
+        return ''
 
     output = []
 

@@ -1,5 +1,6 @@
 import ast
 import os
+import pickle
 import sqlite3
 
 from fastapi import FastAPI, HTTPException
@@ -10,9 +11,9 @@ from llama_index import load_index_from_storage, StorageContext
 from typing import List
 from pydantic import BaseModel
 
-from smolex.config import config
-from smolex.lookup_backends.ast_sqlite import generate_class_interface, create_ast_sqlite_index
-from smolex.lookup_backends.vector_store import create_vector_store_index
+from src.smolex.config import config
+from src.smolex.lookup_backends.ast_sqlite import generate_class_interface, create_ast_sqlite_index
+from src.smolex.lookup_backends.vector_store import create_vector_store_index
 
 app = FastAPI()
 
@@ -40,7 +41,15 @@ class Items(BaseModel):
 def query_sqlite_ast_db(where_clause: str):
     db = sqlite3.connect(config.ast_sqlite_db)
     db_query = f"SELECT AST FROM Entities {where_clause}"
-    return [ast.parse(result[0]) for result in db.execute(db_query).fetchall()]
+
+    results = db.execute(db_query).fetchall()
+
+    if results:
+        print(results)
+        print(f"Found {len(results)} results in SQLite DB")
+        return [ast.parse(pickle.loads(result[0])) for result in results]
+
+    return []
 
 
 def query_vector_store(query_input: str):
@@ -117,21 +126,3 @@ def refresh_backend() -> None:
 
 def require_refresh() -> bool:
     return not os.path.exists(config.vector_store_location) or not os.path.exists(config.ast_sqlite_db)
-
-
-if __name__ == "__main__":
-    import uvicorn
-
-    if "OPENAI_API_KEY" not in os.environ:
-        print("Please set the OPENAI_API_KEY environment variable.")
-        exit(1)
-
-    if require_refresh():
-        print("Refreshing initial vector & AST db backends... (it may take a while)")
-        print("This will only happen once, unless you delete the vector_store_location or ast_sqlite_db files.")
-        print("You can also manually refresh the backends by calling the ./index.py function.")
-        refresh_backend()
-    else:
-        print("Using existing vector & AST db backends. Refresh as needed by calling the ./index.py function.")
-
-    uvicorn.run(app, host="0.0.0.0", port=5003)

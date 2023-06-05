@@ -1,5 +1,5 @@
 from typing import List
-from smolex.config import config
+from src.smolex.config import config
 
 from llama_index import SimpleDirectoryReader, GPTVectorStoreIndex, Document
 
