@@ -1,0 +1,94 @@
+openapi: 3.0.1
+info:
+  title: Smolex Code Retriever
+  description: A plugin that provides code search capabilities for your codebase.
+  version: 'v1'
+servers:
+  - url: http://localhost:5003
+paths:
+  /lookup_interface/:
+    post:
+      operationId: lookup_interface
+      summary: Lookup the interface for existing classes
+      description: This endpoint accepts a list of existing classes and returns their interfaces.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                class_names:
+                  type: array
+                  items:
+                    type: string
+              required:
+                - class_names
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Interface'
+        '400':
+          description: Bad request. User request is invalid.
+        '500':
+          description: Server error
+  /lookup_code/:
+    post:
+      operationId: lookup_code
+      summary: Lookup the existing code for given classes or methods
+      description: This endpoint returns the existing code for given classes or methods
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                items:
+                  type: array
+                  items:
+                    type: string
+              required:
+                - items
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CodeItem'
+        '400':
+          description: Bad request. User request is invalid.
+        '500':
+          description: Server error
+components:
+  schemas:
+    Interface:
+      type: object
+      properties:
+        name:
+          type: string
+        methods:
+          type: array
+          items:
+            type: string
+    CodeItem:
+      type: object
+      properties:
+        name:
+          type: string
+        code:
+          type: string

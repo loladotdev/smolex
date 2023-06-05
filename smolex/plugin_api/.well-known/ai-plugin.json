@@ -1,0 +1,18 @@
+{
+  "schema_version": "v1",
+  "name_for_human": "Smolex Code Retriever",
+  "name_for_model": "Smolex",
+  "description_for_human": "Plugin for retrieving a code base.",
+  "description_for_model": "Plugin to request code information such as interfaces, classes, methods from a code base. Keep response form plugin concise.",
+  "auth": {
+    "type": "none"
+  },
+  "api": {
+    "type": "openapi",
+    "url": "http://localhost:5003/openapi.yaml"
+  },
+  "logo_url": "http://localhost:5003/logo.png",
+  "contact_email": "legal@example.com",
+  "legal_info_url": "http://example.com/legal"
+}
+  
