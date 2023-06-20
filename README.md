@@ -1,6 +1,6 @@
-# Smolex: A code retrieval ChatGPT Plugin
+# Smolex - A code retrieval ChatGPT Plugin
 
-**Experimental: Smolex is very experimental, mostly thrown together to serve my own needs!**
+**🚧 Experimental: Smolex is very experimental, mostly thrown together to serve my own needs!**
 
 ### Motivation
 
@@ -10,23 +10,24 @@ So far I did manually craft a context to provide to ChatGPT, but this is tedious
 Smolex is an experimental plugin for ChatGPT that allows ChatGPT to lookup code context in a codebase and use that as
 context for the conversation. This allows for more natural conversations about code.
 
-### How to use it
+### Use Cases
 
-```
-...
+#### Writing test based on existing tests
 
-Me: Look up the correct class interface for the notebook repo and update your suggestion accordingly.
-ChatGPT (usig Smolex): I have updated the suggestion using NotebookRepository...
+![Demo](./demo_1.png)
 
-...
-```
+#### Updating suggested code based on existing class intefaces / signatures
+
+![Demo](./demo_2.png)
 
 ### How it works
 
 We create embeddings for all code in the codebase and store them locally. We also AST parse all code and store that in a
 local SQLite database. When a user asks a question, we try to look up the requested code in the database and either
-return the entire code or a summary of the code ("interface"). In case we have no match in the database, we use the
-vector store to find the code (or interface) that might be most relevant to the question.
+return the entire code or a summary of the code ("interface" / signature). In case we have no match in the database, we
+use the vector store to find the code (or interface) that might be most relevant to the question.
+
+At the moment Smolex is Python only, but it should be possible to extend it to other languages. ;)
 
 ## Setup
 
@@ -50,6 +51,8 @@ python ./main.py
 - Plugin Store -> Develop your own plugin -> localhost:5003
 
 ### Re-index codebase (as needed)
+
+Rebuilts the AST and Vectorstore. Manually triggered, as needed (e.g. after code changes).
 
 ```
 python ./index.py

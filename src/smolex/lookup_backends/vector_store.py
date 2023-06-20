@@ -9,8 +9,14 @@ def create_vector_store_index():
 
     for source_root in config.roots:
         print(f"Loading documents from {source_root}...")
-        documents.extend(SimpleDirectoryReader(source_root, recursive=True, required_exts=config.extensions,
-                                               exclude=config.exclude).load_data())
+        documents.extend(
+            SimpleDirectoryReader(
+                source_root,
+                recursive=True,
+                required_exts=config.extensions,
+                exclude=config.exclude,
+            ).load_data()
+        )
 
     print("Creating vector store index...")
     index = GPTVectorStoreIndex.from_documents(documents)
@@ -19,5 +25,5 @@ def create_vector_store_index():
     index.storage_context.persist(persist_dir=config.vector_store_location)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     create_vector_store_index()

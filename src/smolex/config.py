@@ -16,10 +16,12 @@ class SmolexConfig:
 
 
 # TODO: Move this to a config file
-config = SmolexConfig.from_dict({
-    "roots": ["/Users/livioso/Code/lolex/src", "/Users/livioso/Code/lolex/test"],
-    "extensions": [".py"],
-    "exclude": ["ui/res/*.py"],
-    "ast_sqlite_db": "/tmp/smolex_ast_info.db",
-    "vector_store_location": "/tmp/smolex_vector_store"
-})
+config = SmolexConfig.from_dict(
+    {
+        "roots": ["/Users/livioso/Code/lolex/src", "/Users/livioso/Code/lolex/test"],
+        "extensions": [".py"],
+        "exclude": ["ui/res/*.py"],
+        "ast_sqlite_db": "/tmp/smolex_ast_info.db",
+        "vector_store_location": "/tmp/smolex_vector_store",
+    }
+)
