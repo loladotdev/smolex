@@ -48,6 +48,8 @@ python ./main.py
 
 ### Install plugin
 
+See [Chat Plugin docs](https://platform.openai.com/docs/plugins/introduction) for details. In general:
+
 - Plugin Store -> Develop your own plugin -> localhost:5003
 
 ### Re-index codebase (as needed)
