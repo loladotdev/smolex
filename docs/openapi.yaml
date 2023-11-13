@@ -1,0 +1,44 @@
+openapi: 3.0.1
+info:
+  title: Smolex Code Retriever
+  description: A plugin that provides code search capabilities for your codebase.
+  version: 'v1'
+servers:
+  # TODO: Change this to the actual URL where the server is hosted!
+  - url: https://something.livio.li
+paths:
+  /api/code/retrieve/:
+    post:
+      operationId: retrieve
+      summary: Lookup and retrieve existing code for given entities (classes, methods)
+      description: This endpoint returns the existing code for given code entities (classes, methods)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                entities:
+                  type: array
+                  items:
+                    type: string
+              required:
+                - items
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      description: Retrieved code for the given entities
+                      type: string
+        '400':
+          description: Bad request. User request is invalid.
+        '500':
+          description: Server error

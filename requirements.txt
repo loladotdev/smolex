@@ -1,5 +1,6 @@
-fastapi==0.96.0
-uvicorn~=0.22.0
-starlette~=0.27.0
-pydantic~=1.10.8
-llama-index==0.6.29
+fastapi==0.104.1
+uvicorn==0.24.0.post1
+starlette==0.32.0.post1
+pydantic==2.5.0
+httpx==0.25.1
+pytest==7.4.3

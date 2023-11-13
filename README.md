@@ -1,32 +1,24 @@
-# Smolex - A code retrieval ChatGPT Plugin
-
-**🚧 Experimental: Smolex is very experimental, mostly thrown together to serve my own needs!**
+# Smolex - Code entity retrieval "GPT action" for ChatGPT!
 
 ### Motivation
 
-Sometimes I have a chat with ChatGPT about a piece of code and want to provide it with more context about my codebase.
-So far I did manually craft a context to provide to ChatGPT, but this is tedious when also considering the token limit.
+The hardest part of using ChatGPT is to provide it with the right context. This is especially true when talking about
+code. This is where Smolex comes in. Smolex is a [GPT](https://openai.com/blog/introducing-gpts) that can be used to
+retrieve code entities from a codebase.
 
-Smolex is an experimental plugin for ChatGPT that allows ChatGPT to lookup code context in a codebase and use that as
-context for the conversation. This allows for more natural conversations about code.
+### Prime Use Cases
 
-### Use Cases
+- Writing test based on existing tests.
+- Updating suggested code based on existing classes / methods.
+- "Look at this code, is there a way to improve it?"
 
-#### Writing test based on existing tests
+#### Showcase
 
-![Demo](./demo_1.png)
-
-#### Updating suggested code based on existing class intefaces / signatures
-
-![Demo](./demo_2.png)
+![Demo](docs/setup.jpg)
 
 ### How it works
 
-We create embeddings for all code in the codebase and store them locally. We also AST parse all code and store that in a
-local SQLite database. When a user asks a question, we try to look up the requested code in the database and either
-return the entire code or a summary of the code ("interface" / signature). In case we have no match in the database, we
-use the vector store to find the code (or interface) that might be most relevant to the question.
-
+We parse the codebase and create an AST for each file that we store in a SQLite database for fast lookups.
 At the moment Smolex is Python only, but it should be possible to extend it to other languages. ;)
 
 ## Setup
@@ -37,25 +29,14 @@ At the moment Smolex is Python only, but it should be possible to extend it to o
 pip install -r requirements.txt
 ```
 
-### Run API server
+### Run Fake API server
 
 ```
-# update config.py with your codebase path
-
-export OPENAI_API_KEY=<your key>
-python ./main.py
+app/main.py --index-root /Users/alice/code/smolex/
 ```
 
-### Install plugin
+### Setup
 
-See [Chat Plugin docs](https://platform.openai.com/docs/plugins/introduction) for details. In general:
-
-- Plugin Store -> Develop your own plugin -> localhost:5003
-
-### Re-index codebase (as needed)
-
-Rebuilts the AST and Vectorstore. Manually triggered, as needed (e.g. after code changes).
-
-```
-python ./reindex.py
-```
+- Set up a new GPT.
+- Add the [openapi.yml](docs/openapi.yml) as an action.
+- Run server and profit.
