@@ -29,7 +29,7 @@ At the moment Smolex is Python only, but it should be possible to extend it to o
 pip install -r requirements.txt
 ```
 
-### Run Fake API server
+### Run Fast API server
 
 ```
 app/main.py --index-root /Users/alice/code/smolex/
