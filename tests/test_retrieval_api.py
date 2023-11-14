@@ -16,6 +16,10 @@ def foo():
 """
 
 ENDPOINT = "/api/code/retrieve/"
+API_KEY = "test-api-key"
+HEADERS = {
+    "authorization": f"Basic {API_KEY}"
+}
 
 
 def test_retrieval_api_code_ast(tmpdir):
@@ -24,8 +28,8 @@ def test_retrieval_api_code_ast(tmpdir):
     valid_python_file.write_text(f"{VALID_CLASS_DEF}\n{VALID_METHOD_DEF}", encoding="utf-8")
 
     # WHEN
-    client = TestClient(create_app(index_root=tmpdir))
-    response = client.post(url=ENDPOINT, json={"entities": ["Foo", "foo"]})
+    client = TestClient(create_app(index_root=tmpdir, api_key=API_KEY))
+    response = client.post(url=ENDPOINT, json={"entities": ["Foo", "foo"]}, headers=HEADERS)
 
     # THEN
     assert response.status_code == 200
@@ -51,8 +55,8 @@ def test_retrieval_api_invalid_files(tmpdir):
     invalid_python_file.write_text("baz = ", encoding="utf-8")
 
     # WHEN
-    client = TestClient(create_app(index_root=tmpdir))
-    response = client.post(url=ENDPOINT, json={"entities": ["Foo"]})
+    client = TestClient(create_app(index_root=tmpdir, api_key=API_KEY))
+    response = client.post(url=ENDPOINT, json={"entities": ["Foo"]}, headers=HEADERS)
 
     # THEN
     assert response.status_code == 200
@@ -68,8 +72,8 @@ def test_retrieval_api_ignored_files(tmpdir):
     ignored_file.write_text("# Baz", encoding="utf-8")
 
     # WHEN
-    client = TestClient(create_app(index_root=tmpdir))
-    response = client.post(url=ENDPOINT, json={"entities": ["Foo"]})
+    client = TestClient(create_app(index_root=tmpdir, api_key=API_KEY))
+    response = client.post(url=ENDPOINT, json={"entities": ["Foo"]}, headers=HEADERS)
 
     # THEN
     assert response.status_code == 200
@@ -81,8 +85,8 @@ def test_retrieval_api_invalid_payload(tmpdir):
     invalid_payload = {"entities": "Foo"}
 
     # WHEN
-    client = TestClient(create_app(tmpdir))
-    response = client.post(url=ENDPOINT, json=invalid_payload)
+    client = TestClient(create_app(index_root=tmpdir, api_key=API_KEY))
+    response = client.post(url=ENDPOINT, json=invalid_payload, headers=HEADERS)
 
     # THEN
     assert response.status_code == 422
@@ -91,3 +95,14 @@ def test_retrieval_api_invalid_payload(tmpdir):
     assert response_json["detail"][0]["loc"] == ["body", "entities"]
     assert response_json["detail"][0]["msg"] == "Input should be a valid list"
     assert response_json["detail"][0]["type"] == "list_type"
+
+
+def test_retrieval_api_unauthorized(tmpdir):
+    # GIVEN
+
+    # WHEN
+    client = TestClient(create_app(index_root=tmpdir, api_key=API_KEY))
+    response = client.post(url=ENDPOINT, json={"entities": ["Foo"]})
+
+    # THEN
+    assert response.status_code == 401
